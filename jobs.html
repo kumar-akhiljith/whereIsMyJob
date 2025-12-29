@@ -176,6 +176,18 @@ td:nth-child(6) .scroll-box {
   background: #b9444f;
 }
 
+.status-wrapper::after {
+  content: "\25BC";
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #6e6e73;
+  font-size: 12px;
+  z-index: 2;
+}
+
 .status-select {
   appearance: none;
   -webkit-appearance: none;
@@ -189,6 +201,7 @@ td:nth-child(6) .scroll-box {
   color: #1c1c1e;
   cursor: pointer;
   position: relative;
+  z-index: 1;
 }
 
 .status-select:focus {
@@ -200,17 +213,6 @@ td:nth-child(6) .scroll-box {
 .status-wrapper {
   position: relative;
   display: inline-block;
-}
-
-.status-wrapper::after {
-  content: "\25BC";
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  pointer-events: none;
-  color: #6e6e73;
-  font-size: 12px;
 }
 
 .status-applied {
@@ -256,9 +258,10 @@ td:nth-child(6) .scroll-box {
             <col style="width: 3%">
             <col style="width: 7%">
             <col style="width: 7%">
+            <col style="width: 7%"> 
+            <col style="width: 7%"> 
             <col style="width: 38%"> 
-            <col style="width: 10%"> 
-            <col style="width: 27%"> 
+            <col style="width: 7%"> 
         </colgroup>
       <thead>
         <tr>

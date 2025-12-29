@@ -1,6 +1,9 @@
 const tableBody = document.getElementById("jobsTable");
 const totalJobsEl = document.getElementById("totalJobs");
 
+
+// fix needs in this file - i have 2 event listeners The second one (inside renderJobs) uses authToken which isn't defined in that scope
+
 const STATUS_OPTIONS = [
   "Applied",
   "Interviewing",
@@ -144,8 +147,8 @@ jobs.forEach((job, index) => {
         ${job.companyName}
       </a>
     </td>
-    <td>${job.jobTitle || "-"}</td>
     <td>${job.location || "-"}</td>
+    <td>${job.jobTitle || "-"}</td>
     <td>${new Date(job.appliedDate).toLocaleDateString()}</td>
 
     <td>
@@ -159,6 +162,7 @@ jobs.forEach((job, index) => {
       <button class="delete-btn" data-id="${job._id}">Delete job</button>
     </div>
     <div style='margin-top: 10px;'>
+     <div class="status-wrapper">
       <select class="status-select" data-id="${job._id}">
         <option value="Applied">Applied</option>
         <option value="Interviewing">Interviewing</option>
@@ -166,6 +170,7 @@ jobs.forEach((job, index) => {
         <option value="Rejected">Rejected</option>
         <option value="Ghosted">Ghosted</option>
       </select>
+      </div>
     </div>
     </td>
   `;
