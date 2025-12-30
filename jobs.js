@@ -38,7 +38,7 @@ document.addEventListener("change", async (e) => {
     }
 
     try {
-      await fetch(`http://localhost:5000/api/jobs/${jobId}/status`, {
+      await fetch(`https://whereismyjob.onrender.com/api/jobs/${jobId}/status`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -84,7 +84,7 @@ async function loadJobs(page = 1) {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/jobs?page=${page}&limit=${PAGE_LIMIT}`,
+        `https://whereismyjob.onrender.com/api/jobs?page=${page}&limit=${PAGE_LIMIT}`,
         {
           headers: {
             Authorization: `Bearer ${res.authToken}`
@@ -302,9 +302,9 @@ async function loadResumes() {
   chrome.storage.local.get("authToken", async (res) => {
     if (!res.authToken) return;
     // https://whereismyjob.onrender.com/api/resumes
-    // http://localhost:5000
+    // https://whereismyjob.onrender.com
     const response = await fetch(
-        "http://localhost:5000/api/resumes",
+        "https://whereismyjob.onrender.com/api/resumes",
       {
         headers: {
           Authorization: `Bearer ${res.authToken}`
@@ -376,7 +376,7 @@ document.addEventListener("click", async (e) => {
     if (!res.authToken) return;
 
     await fetch(
-      `http://localhost:5000/api/resumes/${resumeId}`,
+      `https://whereismyjob.onrender.com/api/resumes/${resumeId}`,
       {
         method: "DELETE",
         headers: {
@@ -402,7 +402,7 @@ document.getElementById("resumeUpload").addEventListener("change", async (e) => 
 
     try {
       await fetch(
-        "http://localhost:5000/api/resumes/",
+        "https://whereismyjob.onrender.com/api/resumes/",
         {
           method: "POST",
           headers: {
@@ -449,7 +449,7 @@ document.addEventListener("change", async (e) => {
     try {
       console.log('ok till now')
       const response = await fetch(
-        `http://localhost:5000/api/resumes/job/${jobId}`,
+        `https://whereismyjob.onrender.com/api/resumes/job/${jobId}`,
         {
           method: "POST",
           headers: {

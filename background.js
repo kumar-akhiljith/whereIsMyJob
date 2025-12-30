@@ -9,7 +9,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
  
       response = await fetch(
         // "https://whereismyjob.onrender.com/api/jobs/manual",
-        "http://localhost:5000/api/linkedin/save",
+        "https://whereismyjob.onrender.com/api/linkedin/save",
         {
           method: "POST",
           headers: {
@@ -24,7 +24,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === "JD_EXTRACTED") {
 
       response = await fetch(
-        "http://localhost:5000/api/extract",
+        "https://whereismyjob.onrender.com/api/extract",
         {
           method: "POST",
           headers: {

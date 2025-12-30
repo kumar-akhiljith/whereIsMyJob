@@ -81,7 +81,7 @@ function loadResumesIntoPopup() {
     if (!res.authToken) return;
 
     const response = await fetch(
-      "http://localhost:5000/api/resumes",
+      "https://whereismyjob.onrender.com/api/resumes",
       {
         headers: {
           Authorization: `Bearer ${res.authToken}`
