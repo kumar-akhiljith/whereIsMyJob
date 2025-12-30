@@ -223,6 +223,10 @@ chrome.runtime.onMessage.addListener((message) => {
   }
 });
 
+// about page
+document.getElementById("aboutBtn").addEventListener("click", () => {
+  window.open("about.html", "_blank");
+});
 
 // chrome.runtime.onMessage.addListener((msg) => {
 //   if (msg.type === "LINKEDIN_SELECTED_CV_DOWNLOADED") {

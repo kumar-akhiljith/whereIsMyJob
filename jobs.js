@@ -7,6 +7,9 @@ const openResumeModalBtn = document.getElementById("openResumeModal");
 const closeResumeModalBtn = document.getElementById("closeResumeModal");
 
 // fix needs in this file - i have 2 event listeners The second one (inside renderJobs) uses authToken which isn't defined in that scope
+let currentPage = 1;
+const PAGE_LIMIT = 10;
+let totalPages = 1;
 
 const STATUS_OPTIONS = [
   "Applied",
@@ -72,44 +75,77 @@ function renderStatusSelect(job) {
   `;
 }
 
-chrome.storage.local.get("authToken", async (res) => {
-  if (!res.authToken) {
-    showMessage("You must be logged in to view jobs.");
-    return;
-  }
+async function loadJobs(page = 1) {
+  chrome.storage.local.get("authToken", async (res) => {
+    if (!res.authToken) {
+      showMessage("You must be logged in to view jobs.");
+      return;
+    }
 
-  try {
-    const response = await fetch("http://localhost:5000/api/jobs", {
-      headers: {
-        Authorization: `Bearer ${res.authToken}`
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/jobs?page=${page}&limit=${PAGE_LIMIT}`,
+        {
+          headers: {
+            Authorization: `Bearer ${res.authToken}`
+          }
+        }
+      );
+
+      if (response.status === 401) {
+        showMessage("Session expired. Please log in again.");
+        return;
       }
-    });
 
-    if (response.status === 401) {
-      showMessage("Session expired. Please log in again.");
-      return;
+      const data = await response.json();
+
+      if (!data.success) {
+        showMessage("Failed to load jobs.");
+        return;
+      }
+
+      currentPage = data.pagination.page;
+      totalPages = data.pagination.totalPages;
+      totalJobsEl.textContent = data.pagination.total;
+
+      renderJobs(data.jobs);
+      renderPaginationControls();
+    } catch (err) {
+      console.error(err);
+      showMessage("Something went wrong while loading jobs.");
     }
+  });
+}
 
-    const data = await response.json();
+// pagination 
+function renderPaginationControls() {
+  const container = document.getElementById("pagination");
+  container.innerHTML = "";
 
-    if (!data.success || !Array.isArray(data.jobs)) {
-      showMessage("Failed to load jobs.");
-      return;
-    }
-    console.log('data.jobs', data.jobs)
-    renderJobs(data.jobs);
-  } catch (err) {
-    console.error(err);
-    showMessage("Something went wrong while loading jobs.");
-  }
-});
+  const prevBtn = document.createElement("button");
+  prevBtn.textContent = "Prev";
+  prevBtn.disabled = currentPage === 1;
+  prevBtn.onclick = () => loadJobs(currentPage - 1);
 
-// status changes 
+  const nextBtn = document.createElement("button");
+  nextBtn.textContent = "Next";
+  nextBtn.disabled = currentPage === totalPages;
+  nextBtn.onclick = () => loadJobs(currentPage + 1);
+
+  const pageInfo = document.createElement("span");
+  pageInfo.style.padding = "8px 12px";
+  pageInfo.textContent = `Page ${currentPage} of ${totalPages}`;
+
+  container.appendChild(prevBtn);
+  container.appendChild(pageInfo);
+  container.appendChild(nextBtn);
+}
+
+loadJobs();
 
 // main ui 
 function renderJobs(jobs) {
   tableBody.innerHTML = "";
-  totalJobsEl.textContent = jobs.length;
 
   if (jobs.length === 0) {
     showMessage("No jobs saved yet.");

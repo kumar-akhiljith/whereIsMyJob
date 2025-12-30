@@ -412,6 +412,32 @@ td.resume-cell {
   background: #d1d1d6;
 }
 
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.pagination button {
+  background: #e5e5ea;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.pagination button.active {
+  background: #007aff;
+  color: #fff;
+}
+
+.pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 </style>
 
   </head>
@@ -483,7 +509,7 @@ td.resume-cell {
     <div class="mario-footer">
       Keep applying. Good luck!
     </div>
-
+    <div id="pagination" class="pagination"></div>
     <script src="jobs.js"></script>
   </body>
 </html>
