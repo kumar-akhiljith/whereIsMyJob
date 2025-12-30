@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>About – Where Is My Job</title>
+
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+                   Roboto, Helvetica, Arial, sans-serif;
+      background: #f2f2f7;
+      color: #1c1c1e;
+      padding: 24px;
+      line-height: 1.6;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      max-width: 720px;
+      margin: auto;
+    }
+
+    h1 {
+      font-size: 22px;
+      margin-bottom: 12px;
+    }
+
+    p {
+      font-size: 15px;
+      margin-bottom: 12px;
+      color: #3a3a3c;
+    }
+
+    .note {
+      background: #f2f2f7;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      color: #555;
+      margin-top: 16px;
+    }
+
+    .footer {
+      margin-top: 24px;
+      text-align: center;
+    }
+
+    .backBtnFromAbout {
+        background: #e5e5ea;
+        color: #1c1c1e;
+        border: none;
+        border-radius: 10px;
+        padding: 6px 12px;
+        font-size: 13px;
+        cursor: pointer;
+        margin-top: 10px;
+    }
+
+    .backBtnFromAbout:hover {
+        background: #d1d1d6;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <h1>Where Is My Job - Chromium based Extension</h1>
+
+    <p>
+      This extension helps you <strong>track the jobs you apply for</strong>
+      without spreadsheets or manual notes.
+    </p>
+
+    <p>
+      You can save job descriptions, company details, locations, and resumes
+      directly while applying — <strong>all in one place by one click.</strong>
+    </p>
+
+    <!-- <p>
+      The goal is simple:
+      <strong>never lose track of where you applied.</strong>
+    </p> -->
+
+    <div class="note">
+      ⚠️ This extension is currently in <strong>beta</strong>.
+      <br />
+      Some features (non-LinkedIn job saving, AI features) are still under development.
+    </div>
+
+    <div class="footer">
+        <a href="https://www.buymeacoffee.com/akhiljith" target="_blank">
+        <img
+            src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
+            alt="Buy Me A Coffee"
+            style="height: 60px; width: 217px;"
+        />
+        </a>
+        <br>
+        <button class="backBtnFromAbout" id="backBtnFromAbout">Back</button>
+    </div>
+
+  </div>
+  <script src="about.js"></script>
+</body>
+</html>

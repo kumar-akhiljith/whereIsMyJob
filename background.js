@@ -24,7 +24,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === "JD_EXTRACTED") {
 
       response = await fetch(
-        "https://whereismyjob.onrender.com/api/extract",
+        "http://localhost:5000/api/extract",
         {
           method: "POST",
           headers: {

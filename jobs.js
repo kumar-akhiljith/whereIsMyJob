@@ -434,5 +434,10 @@ document.addEventListener("change", async (e) => {
   });
 });
 
+// about page
+document.getElementById("aboutBtn").addEventListener("click", () => {
+  window.open("about.html", "_blank");
+});
+
 loadResumes();
 // -------------

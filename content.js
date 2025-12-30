@@ -7,7 +7,10 @@ chrome.runtime.onMessage.addListener((msg) => {
   if (isLinkedIn) {
     extractLinkedInJob(resumeId);
   } else {
-    extractGenericJob(resumeId);
+    alert(
+    "Saving jobs from non-LinkedIn websites is still under development.\n\nPlease use it in LinkedIn jobs for now."
+    );
+    // extractGenericJob(resumeId);
   }
 });
 
@@ -74,7 +77,7 @@ function extractLinkedInLocation(resumeId) {
 }
 
 // other sites 
-function extractGenericJob() {
+function extractGenericJob(resumeId) {
 
   chrome.runtime.sendMessage({
     type: "JD_EXTRACTED",
