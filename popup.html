@@ -79,6 +79,16 @@
     .report-bug:hover {
         text-decoration: underline;
     }
+    .resume-select {
+      width: 100%;
+      margin-top: 8px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid #d1d1d6;
+      font-size: 13px;
+      background: #fff;
+      margin-bottom: 12px;
+    }
     </style>
   </head>
 
@@ -87,6 +97,10 @@
       <h3>Where Is My Job</h3>
 
       <button id="saveJD">Save this Job</button>
+       <!-- <br> -->
+      <select id="resumeSelect" class="resume-select">
+        <option value="">No resume selected</option>
+      </select>
         <br>
       <button id="viewJobs" class="secondary">
         View Saved

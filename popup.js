@@ -3,6 +3,7 @@ const viewJobs = document.getElementById("viewJobs");
 const saveJD = document.getElementById("saveJD");
 const logoutBtn = document.getElementById("logoutBtn");
 const statusEl = document.getElementById("status");
+const resumeSelect = document.getElementById("resumeSelect");
 
 // managing render waking up time -temporary
 let wakeupTimeout = null;
@@ -74,13 +75,44 @@ logoutBtn.addEventListener("click", () => {
 //   });
 // });
 
+// resume 
+function loadResumesIntoPopup() {
+  chrome.storage.local.get("authToken", async (res) => {
+    if (!res.authToken) return;
+
+    const response = await fetch(
+      "http://localhost:5000/api/resumes",
+      {
+        headers: {
+          Authorization: `Bearer ${res.authToken}`
+        }
+      }
+    );
+
+    const data = await response.json();
+    renderResumeDropdown(data.resumes || []);
+  });
+}
+
+function renderResumeDropdown(resumes) {
+  resumeSelect.innerHTML = `<option value="">No resume selected</option>`;
+
+  resumes.forEach((resume) => {
+    const opt = document.createElement("option");
+    opt.value = resume._id;
+    opt.textContent = resume.name;
+    resumeSelect.appendChild(opt);
+  });
+}
+
 saveJD.addEventListener("click", async () => {
   showSavingState();
-
+   
   wakeupTimeout = setTimeout(() => {
     showWakingUpMessage();
   }, 3000);
 
+  const selectedResumeId = resumeSelect.value || null;
   try {
      const [tab] = await chrome.tabs.query({
       active: true,
@@ -97,13 +129,14 @@ saveJD.addEventListener("click", async () => {
     }
 
     try {
-      await chrome.tabs.sendMessage(tab.id, { type: "EXTRACT_JOB" });
+      await chrome.tabs.sendMessage(tab.id, { type: "EXTRACT_JOB",  resumeId: selectedResumeId });
     } catch (err) {
+      // re attach content if its not
       await chrome.scripting.executeScript({
         target: { tabId: tab.id },
         files: ["content.js"]
       });
-      await chrome.tabs.sendMessage(tab.id, { type: "EXTRACT_JOB" });
+      await chrome.tabs.sendMessage(tab.id, { type: "EXTRACT_JOB",  resumeId: selectedResumeId });
     }
 
   } catch (err) {
@@ -137,6 +170,7 @@ function showLoggedIn(name) {
   saveJD.style.display = 'block'
 viewJobs.style.display = 'block'
   statusEl.textContent = `Logged in as ${name}`;
+  loadResumesIntoPopup();
 }
 
 function showLoggedOut() {

@@ -1,16 +1,17 @@
 chrome.runtime.onMessage.addListener((msg) => {
   if (msg.type !== "EXTRACT_JOB") return;
 
+  const resumeId = msg.resumeId || null;
   const isLinkedIn = location.hostname.includes("linkedin.com");
 
   if (isLinkedIn) {
-    extractLinkedInJob();
+    extractLinkedInJob(resumeId);
   } else {
-    extractGenericJob();
+    extractGenericJob(resumeId);
   }
 });
 
-function extractLinkedInJob() {
+function extractLinkedInJob(resumeId) {
 
   const jobTitleEl = document.querySelector(
     ".job-details-jobs-unified-top-card__job-title h1"
@@ -51,6 +52,7 @@ function extractLinkedInJob() {
       companyLinkedinUrl,
       jobDescription,
       jobLocation,
+      resumeId,
       sourceUrl: location.href
     }
   });
@@ -58,7 +60,7 @@ function extractLinkedInJob() {
   return true;
 }
 
-function extractLinkedInLocation() {
+function extractLinkedInLocation(resumeId) {
   const container = document.querySelector(
     ".job-details-jobs-unified-top-card__tertiary-description-container"
   );
@@ -78,6 +80,7 @@ function extractGenericJob() {
     type: "JD_EXTRACTED",
     payload: {
       pageText: document.body.innerText,
+      resumeId,
       sourceUrl: location.href
     }
   });

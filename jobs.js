@@ -2,7 +2,9 @@ const tableBody = document.getElementById("jobsTable");
 const totalJobsEl = document.getElementById("totalJobs");
 const resumeDropdown = document.getElementById("resumeDropdown");
 const resumeUploadInput = document.getElementById("resumeUpload");
-
+const resumeModal = document.getElementById("resumeModal");
+const openResumeModalBtn = document.getElementById("openResumeModal");
+const closeResumeModalBtn = document.getElementById("closeResumeModal");
 
 // fix needs in this file - i have 2 event listeners The second one (inside renderJobs) uses authToken which isn't defined in that scope
 
@@ -234,8 +236,6 @@ function showToast(message, type = "success") {
   }, 2500);
 }
 
-// -------------
-
 // resume functions
 
 async function loadResumes() {
@@ -257,24 +257,81 @@ async function loadResumes() {
   });
 }
 
-function renderResumes(resumes) {
-  resumeDropdown.innerHTML = "";
+// cv ui funcions
+openResumeModalBtn.addEventListener("click", () => {
+  resumeModal.classList.remove("hidden");
+  loadResumes();
+});
 
-  if (resumes.length === 0) {
-    resumeDropdown.innerHTML = `<option>No resumes uploaded</option>`;
+closeResumeModalBtn.addEventListener("click", closeResumeModal);
+
+resumeModal.querySelector(".modal-backdrop")
+  .addEventListener("click", closeResumeModal);
+
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") closeResumeModal();
+});
+
+function closeResumeModal() {
+  resumeModal.classList.add("hidden");
+}
+
+function renderResumes(resumes) {
+  const list = document.getElementById("resumeList");
+  list.innerHTML = "";
+
+  if (!resumes.length) {
+    list.innerHTML = `
+      <p style="color:#6e6e73; text-align:center;">
+        No resumes uploaded yet
+      </p>`;
     return;
   }
 
-  resumes.forEach((resume) => {
-    const option = document.createElement("option");
-    option.value = resume._id;
-    option.textContent = resume.name;
-    resumeDropdown.appendChild(option);
+  resumes.forEach(resume => {
+    const div = document.createElement("div");
+    div.className = "resume-item";
+
+    div.innerHTML = `
+      <span class="resume-name" title="${resume.name}">
+        ${resume.name}
+      </span>
+      <button class="resume-delete" data-id="${resume._id}">
+        Delete
+      </button>
+    `;
+
+    list.appendChild(div);
   });
 }
 
-resumeUploadInput.addEventListener("change", async () => {
-  const file = resumeUploadInput.files[0];
+document.addEventListener("click", async (e) => {
+  if (!e.target.classList.contains("resume-delete")) return;
+
+  const resumeId = e.target.dataset.id;
+
+  if (!confirm("Delete this resume?")) return;
+
+  chrome.storage.local.get("authToken", async (res) => {
+    if (!res.authToken) return;
+
+    await fetch(
+      `http://localhost:5000/api/resumes/${resumeId}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${res.authToken}`
+        }
+      }
+    );
+
+    loadResumes();
+    showToast("Resume deleted", "success");
+  });
+});
+
+document.getElementById("resumeUpload").addEventListener("change", async (e) => {
+  const file = e.target.files[0];
   if (!file) return;
 
   chrome.storage.local.get("authToken", async (res) => {
@@ -284,8 +341,8 @@ resumeUploadInput.addEventListener("change", async () => {
     formData.append("resume", file);
 
     try {
-      const response = await fetch(
-        "http://localhost:5000/api/resumes",
+      await fetch(
+        "http://localhost:5000/api/resumes/",
         {
           method: "POST",
           headers: {
@@ -294,8 +351,6 @@ resumeUploadInput.addEventListener("change", async () => {
           body: formData
         }
       );
-
-      if (!response.ok) throw new Error();
 
       showToast("Resume uploaded", "success");
       loadResumes();
@@ -306,5 +361,4 @@ resumeUploadInput.addEventListener("change", async () => {
 });
 
 loadResumes();
-
 // -------------

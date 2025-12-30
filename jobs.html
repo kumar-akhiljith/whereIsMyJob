@@ -240,44 +240,121 @@ td:nth-child(6) .scroll-box {
   background: #eeeeee;
   color: #6e6e73;
 }
-
-/* resume  */
-.header-bar {
+.top-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
 }
 
-.resume-controls {
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-#resumeDropdown {
-  padding: 8px 12px;
-  border-radius: 10px;
-  border: 1px solid #d1d1d6;
-  background: #fff;
-  font-size: 14px;
-  min-width: 180px;
-}
-
-.upload-btn {
-  padding: 8px 14px;
+.manage-resume-btn {
   background: #007aff;
-  color: #fff;
+  color: white;
+  border: none;
   border-radius: 10px;
+  padding: 8px 14px;
   font-size: 14px;
   cursor: pointer;
-  user-select: none;
 }
 
-.upload-btn:hover {
+.manage-resume-btn:hover {
   opacity: 0.9;
 }
 
+/* Modal */
+.modal.hidden {
+  display: none;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+}
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+}
+
+.modal-card {
+  position: relative;
+  background: #fff;
+  width: 420px;
+  max-height: 80vh;
+  margin: 10vh auto;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.25);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  border-bottom: 1px solid #e5e5ea;
+}
+
+.modal-header h2 {
+  font-size: 18px;
+  margin: 0;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.modal-body {
+  padding: 12px 18px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.modal-footer {
+  padding: 12px 18px;
+  border-top: 1px solid #e5e5ea;
+  text-align: right;
+}
+
+.upload-btn {
+  color: #007aff;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Resume list */
+.resume-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 8px;
+  border-radius: 10px;
+}
+
+.resume-item:hover {
+  background: #f2f2f7;
+}
+
+.resume-name {
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.resume-delete {
+  background: none;
+  border: none;
+  color: #ff3b30;
+  cursor: pointer;
+  font-size: 13px;
+}
 </style>
 
   </head>
@@ -286,24 +363,38 @@ td:nth-child(6) .scroll-box {
     <h1>Applied Jobs</h1>   
     <p style="text-align: center">Press Ctrl + F to do default search</p>
     <div id="toast" class="toast"></div>
-
-    <div class="header-bar">
+    <div class="top-bar">
       <div class="stats">
         TOTAL JOBS APPLIED: <span id="totalJobs">0</span>
       </div>
 
-      <div class="resume-controls">
-        <select id="resumeDropdown">
-          <option>_________</option>
-        </select>
-
-        <label class="upload-btn">
-          + Upload
-          <input type="file" id="resumeUpload" accept="application/pdf" hidden />
-        </label>
-      </div>
+      <button id="openResumeModal" class="manage-resume-btn">
+        Manage Resumes
+      </button>
     </div>
 
+    <!-- Resume Modal -->
+    <div id="resumeModal" class="modal hidden">
+      <div class="modal-backdrop"></div>
+
+      <div class="modal-card">
+        <div class="modal-header">
+          <h2>Your Resumes</h2>
+          <button id="closeResumeModal" class="close-btn">Close [Esc]</button>
+        </div>
+
+        <div class="modal-body">
+          <div id="resumeList" class="resume-list"></div>
+        </div>
+
+        <div class="modal-footer">
+          <label class="upload-btn">
+            + Upload resume
+            <input type="file" id="resumeUpload" hidden />
+          </label>
+        </div>
+      </div>
+    </div>
 
     <table>
         <colgroup>
