@@ -14,6 +14,42 @@ const STATUS_OPTIONS = [
   "Ghosted"
 ];
 
+document.addEventListener("change", async (e) => {
+  if (!e.target.classList.contains("status-select")) return;
+
+  const jobId = e.target.dataset.id;
+  const newStatus = e.target.value;
+  const select = e.target;
+
+  // https://whereismyjob.onrender.com/api/jobs/${jobId}/status
+
+  select.className = `status-select status-${newStatus.toLowerCase()}`;
+
+
+  chrome.storage.local.get("authToken", async (res) => {
+    if (!res.authToken) {
+      showToast("Session expired. Please log in again.", "error");
+      return;
+    }
+
+    try {
+      await fetch(`http://localhost:5000/api/jobs/${jobId}/status`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${res.authToken}`
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+
+      showToast("Status updated", "success");
+    } catch (err) {
+      console.error("Status update failed", err);
+      showToast("Failed to update status", "error");
+    }
+  });
+});
+
 function getStatusClass(status) {
   return `status-${status.toLowerCase()}`;
 }
@@ -77,43 +113,6 @@ function renderJobs(jobs) {
     showMessage("No jobs saved yet.");
     return;
   }
-
-document.addEventListener("change", async (e) => {
-  if (!e.target.classList.contains("status-select")) return;
-
-  const jobId = e.target.dataset.id;
-  const newStatus = e.target.value;
-  const select = e.target;
-
-  // https://whereismyjob.onrender.com/api/jobs/${jobId}/status
-
-  select.className = `status-select status-${newStatus.toLowerCase()}`;
-
-
-  chrome.storage.local.get("authToken", async (res) => {
-    if (!res.authToken) {
-      showToast("Session expired. Please log in again.", "error");
-      return;
-    }
-
-    try {
-      await fetch(`http://localhost:5000/api/jobs/${jobId}/status`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${res.authToken}`
-        },
-        body: JSON.stringify({ status: newStatus })
-      });
-
-      showToast("Status updated", "success");
-    } catch (err) {
-      console.error("Status update failed", err);
-      showToast("Failed to update status", "error");
-    }
-  });
-});
-
 
 jobs.forEach((job, index) => {
   const row = document.createElement("tr");
