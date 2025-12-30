@@ -10,7 +10,6 @@
     "128": "icons/icon128.png"
     },
   "permissions": [
-    "downloads",
     "storage",
     "activeTab",
     "scripting"
@@ -20,7 +19,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
+      "matches": ["*://*.linkedin.com/*"],
       "js": ["content.js"],
       "run_at": "document_idle"
     }
