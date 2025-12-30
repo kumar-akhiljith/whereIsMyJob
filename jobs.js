@@ -1,5 +1,7 @@
 const tableBody = document.getElementById("jobsTable");
 const totalJobsEl = document.getElementById("totalJobs");
+const resumeDropdown = document.getElementById("resumeDropdown");
+const resumeUploadInput = document.getElementById("resumeUpload");
 
 
 // fix needs in this file - i have 2 event listeners The second one (inside renderJobs) uses authToken which isn't defined in that scope
@@ -65,11 +67,28 @@ chrome.storage.local.get("authToken", async (res) => {
 });
 
 // status changes 
-document.addEventListener("change", (e) => {
+
+// main ui 
+function renderJobs(jobs) {
+  tableBody.innerHTML = "";
+  totalJobsEl.textContent = jobs.length;
+
+  if (jobs.length === 0) {
+    showMessage("No jobs saved yet.");
+    return;
+  }
+
+document.addEventListener("change", async (e) => {
   if (!e.target.classList.contains("status-select")) return;
 
   const jobId = e.target.dataset.id;
   const newStatus = e.target.value;
+  const select = e.target;
+
+  // https://whereismyjob.onrender.com/api/jobs/${jobId}/status
+
+  select.className = `status-select status-${newStatus.toLowerCase()}`;
+
 
   chrome.storage.local.get("authToken", async (res) => {
     if (!res.authToken) {
@@ -93,43 +112,6 @@ document.addEventListener("change", (e) => {
       showToast("Failed to update status", "error");
     }
   });
-});
-
-// main ui 
-function renderJobs(jobs) {
-  tableBody.innerHTML = "";
-  totalJobsEl.textContent = jobs.length;
-
-  if (jobs.length === 0) {
-    showMessage("No jobs saved yet.");
-    return;
-  }
-
-document.addEventListener("change", async (e) => {
-  if (!e.target.classList.contains("status-select")) return;
-
-  const jobId = e.target.dataset.id;
-  const newStatus = e.target.value;
-  const select = e.target;
-
-  // https://whereismyjob.onrender.com/api/jobs/${jobId}/status
-
-  select.className = `status-select status-${newStatus.toLowerCase()}`;
-
-  try {
-    await fetch(`http://localhost:5000/api/jobs/${jobId}/status`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${authToken}`
-      },
-      body: JSON.stringify({ status: newStatus })
-    });
-
-    showToast("Status updated", "success");
-  } catch {
-    showToast("Failed to update status", "error");
-  }
 });
 
 
@@ -252,3 +234,78 @@ function showToast(message, type = "success") {
     toastEl.classList.remove("show");
   }, 2500);
 }
+
+// -------------
+
+// resume functions
+
+async function loadResumes() {
+  chrome.storage.local.get("authToken", async (res) => {
+    if (!res.authToken) return;
+    // https://whereismyjob.onrender.com/api/resumes
+    // http://localhost:5000
+    const response = await fetch(
+        "http://localhost:5000/api/resumes",
+      {
+        headers: {
+          Authorization: `Bearer ${res.authToken}`
+        }
+      }
+    );
+
+    const data = await response.json();
+    renderResumes(data.resumes || []);
+  });
+}
+
+function renderResumes(resumes) {
+  resumeDropdown.innerHTML = "";
+
+  if (resumes.length === 0) {
+    resumeDropdown.innerHTML = `<option>No resumes uploaded</option>`;
+    return;
+  }
+
+  resumes.forEach((resume) => {
+    const option = document.createElement("option");
+    option.value = resume._id;
+    option.textContent = resume.name;
+    resumeDropdown.appendChild(option);
+  });
+}
+
+resumeUploadInput.addEventListener("change", async () => {
+  const file = resumeUploadInput.files[0];
+  if (!file) return;
+
+  chrome.storage.local.get("authToken", async (res) => {
+    if (!res.authToken) return;
+
+    const formData = new FormData();
+    formData.append("resume", file);
+
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/resumes",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${res.authToken}`
+          },
+          body: formData
+        }
+      );
+
+      if (!response.ok) throw new Error();
+
+      showToast("Resume uploaded", "success");
+      loadResumes();
+    } catch {
+      showToast("Upload failed", "error");
+    }
+  });
+});
+
+loadResumes();
+
+// -------------
