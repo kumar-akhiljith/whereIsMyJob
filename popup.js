@@ -103,6 +103,12 @@ function renderResumeDropdown(resumes) {
     opt.textContent = resume.name;
     resumeSelect.appendChild(opt);
   });
+
+  chrome.storage.local.get("lastSelectedResumeId", (res) => {
+    if (res.lastSelectedResumeId) {
+      resumeSelect.value = res.lastSelectedResumeId;
+    }
+  });
 }
 
 saveJD.addEventListener("click", async () => {
@@ -113,6 +119,9 @@ saveJD.addEventListener("click", async () => {
   }, 3000);
 
   const selectedResumeId = resumeSelect.value || null;
+  chrome.storage.local.set({
+    lastSelectedResumeId: selectedResumeId
+  });
   try {
      const [tab] = await chrome.tabs.query({
       active: true,
