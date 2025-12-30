@@ -79,7 +79,7 @@ chrome.storage.local.get("authToken", async (res) => {
   }
 
   try {
-    const response = await fetch("https://whereismyjob.onrender.com/api/jobs", {
+    const response = await fetch("http://localhost:5000/api/jobs", {
       headers: {
         Authorization: `Bearer ${res.authToken}`
       }
@@ -96,7 +96,7 @@ chrome.storage.local.get("authToken", async (res) => {
       showMessage("Failed to load jobs.");
       return;
     }
-
+    console.log('data.jobs', data.jobs)
     renderJobs(data.jobs);
   } catch (err) {
     console.error(err);
@@ -138,6 +138,18 @@ jobs.forEach((job, index) => {
       <div class="scroll-box">
         ${job.jobDescription}
       </div>
+    </td>
+
+    <td>
+      ${
+        job.resumeId
+          ? `<a href="${job.resumeId.fileUrl}"
+              target="_blank"
+              style="color:#007aff; text-decoration:none;">
+              ${job.resumeId.name}
+            </a>`
+          : `<span style="color:#8e8e93">_</span>`
+      }
     </td>
 
     <td>
