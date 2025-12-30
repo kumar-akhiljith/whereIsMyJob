@@ -326,6 +326,7 @@ td:nth-child(6) .scroll-box {
   color: #007aff;
   font-weight: 500;
   cursor: pointer;
+  font-size: 14px;
 }
 
 /* Resume list */
@@ -344,8 +345,11 @@ td:nth-child(6) .scroll-box {
 .resume-name {
   max-width: 260px;
   overflow: hidden;
+  max-height: 3.2em;
+  overflow-y: auto;
+  word-break: break-word;
+  white-space: normal;
   text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .resume-delete {
@@ -355,6 +359,45 @@ td:nth-child(6) .scroll-box {
   cursor: pointer;
   font-size: 13px;
 }
+.change-resume-btn {
+  margin-top: 6px;
+  padding: 6px 12px;
+  font-size: 13px;
+  background: #8e8e93;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+td.resume-cell {
+  max-width: 220px;
+}
+
+/* scroll bar for resume  */
+.resume-name::-webkit-scrollbar {
+  width: 4px;
+}
+
+.resume-name::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.25);
+  border-radius: 10px;
+}
+
+.change-resume-btn:hover {
+  opacity: 0.9;
+}
+
+.job-resume {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #1c1c1e;
+}
+
+.resume-name {
+  margin-bottom: 4px;
+}
+
 </style>
 
   </head>
@@ -399,9 +442,9 @@ td:nth-child(6) .scroll-box {
     <table>
         <colgroup>
             <col style="width: 3%">
-            <col style="width: 7%">
-            <col style="width: 7%">
-            <col style="width: 7%"> 
+            <col style="width: 5%">
+            <col style="width: 9%">
+            <col style="width: 9%"> 
             <col style="width: 7%"> 
             <col style="width: 38%"> 
             <col style="width: 10%"> 

@@ -169,6 +169,7 @@ function showLoggedIn(name) {
   logoutBtn.style.display = "block";
   saveJD.style.display = 'block'
 viewJobs.style.display = 'block'
+resumeSelect.style.display = 'block'
   statusEl.textContent = `Logged in as ${name}`;
   loadResumesIntoPopup();
 }
@@ -177,6 +178,7 @@ function showLoggedOut() {
   loginBtn.style.display = "block";
   logoutBtn.style.display = "none";
   saveJD.style.display = 'none'
+  resumeSelect.style.display = 'none'
 viewJobs.style.display = 'none'
   statusEl.textContent = "";
 }

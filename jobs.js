@@ -130,7 +130,7 @@ jobs.forEach((job, index) => {
         ${job.companyName}
       </a>
     </td>
-    <td>${job.location || "-"}</td>
+    <td>${job.jobLocation || "-"}</td>
     <td>${job.jobTitle || "-"}</td>
     <td>${new Date(job.appliedDate).toLocaleDateString()}</td>
 
@@ -140,7 +140,8 @@ jobs.forEach((job, index) => {
       </div>
     </td>
 
-    <td>
+    <td class="resume-cell">
+      <div class="resume-name">
       ${
         job.resumeId
           ? `<a href="${job.resumeId.fileUrl}"
@@ -148,8 +149,19 @@ jobs.forEach((job, index) => {
               style="color:#007aff; text-decoration:none;">
               ${job.resumeId.name}
             </a>`
-          : `<span style="color:#8e8e93">_</span>`
+          : `<span style="color:#8e8e93"></span>`
       }
+      </div>
+      <button class="change-resume-btn" data-id="${job._id}">
+         Upload new
+        </button>
+      <input
+        type="file"
+        class="resume-input"
+        data-id="${job._id}"
+        accept=".pdf,.doc,.docx"
+        hidden
+      />
     </td>
 
     <td>
@@ -368,6 +380,56 @@ document.getElementById("resumeUpload").addEventListener("change", async (e) => 
       loadResumes();
     } catch {
       showToast("Upload failed", "error");
+    }
+  });
+});
+
+// open file expo 
+document.addEventListener("click", (e) => {
+  if (!e.target.classList.contains("change-resume-btn")) return;
+
+  const jobId = e.target.dataset.id;
+  const input = document.querySelector(
+    `.resume-input[data-id="${jobId}"]`
+  );
+
+  input.click();
+});
+
+// re upload 
+document.addEventListener("change", async (e) => {
+  if (!e.target.classList.contains("resume-input")) return;
+
+  const jobId = e.target.dataset.id;
+  const file = e.target.files[0];
+  if (!file) return;
+
+  chrome.storage.local.get("authToken", async (res) => {
+    if (!res.authToken) return;
+
+    const formData = new FormData();
+    formData.append("resume", file);
+
+    try {
+      console.log('ok till now')
+      const response = await fetch(
+        `http://localhost:5000/api/resumes/job/${jobId}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${res.authToken}`
+          },
+          body: formData
+        }
+      );
+
+      if (!response.ok) throw new Error();
+
+      showToast("Resume updated for this job", "success");
+      location.reload();
+
+    } catch {
+      showToast("Failed to update resume", "error");
     }
   });
 });
