@@ -23,9 +23,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
 
     if (message.type === "JD_EXTRACTED") {
-
       response = await fetch(
-        `${API_BASE_URL}/api/extract`,
+        `${API_BASE_URL}/api/ai/extract`,
         {
           method: "POST",
           headers: {
