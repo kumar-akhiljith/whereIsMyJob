@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "./config.js";
 const tableBody = document.getElementById("jobsTable");
 const totalJobsEl = document.getElementById("totalJobs");
 const resumeDropdown = document.getElementById("resumeDropdown");
@@ -26,8 +27,6 @@ document.addEventListener("change", async (e) => {
   const newStatus = e.target.value;
   const select = e.target;
 
-  // https://whereismyjob.onrender.com/api/jobs/${jobId}/status
-
   select.className = `status-select status-${newStatus.toLowerCase()}`;
 
 
@@ -38,7 +37,7 @@ document.addEventListener("change", async (e) => {
     }
 
     try {
-      await fetch(`https://whereismyjob.onrender.com/api/jobs/${jobId}/status`, {
+      await fetch(`${API_BASE_URL}/api/jobs/${jobId}/status`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -84,7 +83,7 @@ async function loadJobs(page = 1) {
 
     try {
       const response = await fetch(
-        `https://whereismyjob.onrender.com/api/jobs?page=${page}&limit=${PAGE_LIMIT}`,
+        `${API_BASE_URL}/api/jobs?page=${page}&limit=${PAGE_LIMIT}`,
         {
           headers: {
             Authorization: `Bearer ${res.authToken}`
@@ -260,7 +259,7 @@ document.addEventListener("click", async (e) => {
 
     try {
       const response = await fetch(
-        `https://whereismyjob.onrender.com/api/jobs/${jobId}`,
+        `${API_BASE_URL}/api/jobs/${jobId}`,
         {
           method: "DELETE",
           headers: {
@@ -301,10 +300,8 @@ function showToast(message, type = "success") {
 async function loadResumes() {
   chrome.storage.local.get("authToken", async (res) => {
     if (!res.authToken) return;
-    // https://whereismyjob.onrender.com/api/resumes
-    // https://whereismyjob.onrender.com
     const response = await fetch(
-        "https://whereismyjob.onrender.com/api/resumes",
+        `${API_BASE_URL}/api/resumes`,
       {
         headers: {
           Authorization: `Bearer ${res.authToken}`
@@ -376,7 +373,7 @@ document.addEventListener("click", async (e) => {
     if (!res.authToken) return;
 
     await fetch(
-      `https://whereismyjob.onrender.com/api/resumes/${resumeId}`,
+      `${API_BASE_URL}/api/resumes/${resumeId}`,
       {
         method: "DELETE",
         headers: {
@@ -402,7 +399,7 @@ document.getElementById("resumeUpload").addEventListener("change", async (e) => 
 
     try {
       await fetch(
-        "https://whereismyjob.onrender.com/api/resumes/",
+        `${API_BASE_URL}/api/resumes/`,
         {
           method: "POST",
           headers: {
@@ -449,7 +446,7 @@ document.addEventListener("change", async (e) => {
     try {
       console.log('ok till now')
       const response = await fetch(
-        `https://whereismyjob.onrender.com/api/resumes/job/${jobId}`,
+        `${API_BASE_URL}/api/resumes/job/${jobId}`,
         {
           method: "POST",
           headers: {

@@ -1,3 +1,5 @@
+import { API_BASE_URL } from "./config.js";
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   (async () => {
     const { authToken } = await chrome.storage.local.get("authToken");
@@ -8,8 +10,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === "LINKEDIN_JOB_EXTRACTED") {
  
       response = await fetch(
-        // "https://whereismyjob.onrender.com/api/jobs/manual",
-        "https://whereismyjob.onrender.com/api/linkedin/save",
+        `${API_BASE_URL}/api/linkedin/save`,
         {
           method: "POST",
           headers: {
@@ -24,7 +25,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === "JD_EXTRACTED") {
 
       response = await fetch(
-        "https://whereismyjob.onrender.com/api/extract",
+        `${API_BASE_URL}/api/extract`,
         {
           method: "POST",
           headers: {

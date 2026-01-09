@@ -1,3 +1,4 @@
+import { API_BASE_URL } from "./config.js";
 const loginBtn = document.getElementById("loginBtn");
 const viewJobs = document.getElementById("viewJobs");
 const saveJD = document.getElementById("saveJD");
@@ -54,7 +55,7 @@ function isTokenExpired(token) {
 
 loginBtn.addEventListener("click", () => {
   chrome.tabs.create({
-    url: "https://whereismyjob.onrender.com/auth/google"
+    url: `${API_BASE_URL}/auth/google`
   });
 });
 
@@ -81,7 +82,7 @@ function loadResumesIntoPopup() {
     if (!res.authToken) return;
 
     const response = await fetch(
-      "https://whereismyjob.onrender.com/api/resumes",
+      `${API_BASE_URL}/api/resumes`,
       {
         headers: {
           Authorization: `Bearer ${res.authToken}`
