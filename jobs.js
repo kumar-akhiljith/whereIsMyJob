@@ -7,7 +7,6 @@ const resumeModal = document.getElementById("resumeModal");
 const openResumeModalBtn = document.getElementById("openResumeModal");
 const closeResumeModalBtn = document.getElementById("closeResumeModal");
 
-// fix needs in this file - i have 2 event listeners The second one (inside renderJobs) uses authToken which isn't defined in that scope
 let currentPage = 1;
 const PAGE_LIMIT = 10;
 let totalPages = 1;
@@ -408,7 +407,7 @@ document.getElementById("resumeUpload").addEventListener("change", async (e) => 
           body: formData
         }
       );
-
+      closeResumeModal()
       showToast("Resume uploaded", "success");
       loadResumes();
     } catch {
