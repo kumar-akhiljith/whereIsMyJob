@@ -1,10 +1,15 @@
 import { API_BASE_URL } from "./config.js";
 const loginBtn = document.getElementById("loginBtn");
+const generateEmailBtn = document.getElementById("generateEmail");
 const viewJobs = document.getElementById("viewJobs");
 const saveJD = document.getElementById("saveJD");
 const logoutBtn = document.getElementById("logoutBtn");
 const statusEl = document.getElementById("status");
 const resumeSelect = document.getElementById("resumeSelect");
+
+// starting reset options
+loadResumeFromLocalStorage();
+// -----------------------------
 
 // managing render waking up time -temporary
 let wakeupTimeout = null;
@@ -55,26 +60,18 @@ function isTokenExpired(token) {
 
 loginBtn.addEventListener("click", () => {
   chrome.tabs.create({
-    url: `${API_BASE_URL}/auth/google`
+    url: `https://whereismyjob.onrender.com/auth/google`
   });
 });
 
 logoutBtn.addEventListener("click", () => {
   chrome.storage.local.remove(
-    ["authToken", "userName", "userEmail"],
+    ["authToken", "userName", "userEmail", "lastSelectedResumeId"],
     () => {
       showLoggedOut();
     }
   );
 });
-
-// document.getElementById("saveJD").addEventListener("click", async () => {
-//   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-//   chrome.scripting.executeScript({
-//     target: { tabId: tab.id },
-//     files: ["content.js"]
-//   });
-// });
 
 // resume 
 function loadResumesIntoPopup() {
@@ -105,6 +102,10 @@ function renderResumeDropdown(resumes) {
     resumeSelect.appendChild(opt);
   });
 
+  loadResumeFromLocalStorage();
+}
+
+function loadResumeFromLocalStorage() {
   chrome.storage.local.get("lastSelectedResumeId", (res) => {
     if (res.lastSelectedResumeId) {
       resumeSelect.value = res.lastSelectedResumeId;
@@ -167,19 +168,14 @@ document.getElementById("viewJobs").addEventListener("click", () => {
   });
 });
 
-// document.getElementById("loginBtn").addEventListener("click", () => {
-//   chrome.tabs.create({
-//     url: "https://whereismyjob.onrender.com/auth/google"
-//   });
-// });
-
 
 function showLoggedIn(name) {
   loginBtn.style.display = "none";
   logoutBtn.style.display = "block";
   saveJD.style.display = 'block'
-viewJobs.style.display = 'block'
-resumeSelect.style.display = 'block'
+  generateEmailBtn.style.display = "block";
+  viewJobs.style.display = 'block'
+  resumeSelect.style.display = 'block'
   statusEl.textContent = `Logged in as ${name}`;
   loadResumesIntoPopup();
 }
@@ -188,8 +184,9 @@ function showLoggedOut() {
   loginBtn.style.display = "block";
   logoutBtn.style.display = "none";
   saveJD.style.display = 'none'
+  generateEmailBtn.style.display = "none";
   resumeSelect.style.display = 'none'
-viewJobs.style.display = 'none'
+  viewJobs.style.display = 'none'
   statusEl.textContent = "";
 }
 
@@ -245,3 +242,41 @@ document.getElementById("aboutBtn").addEventListener("click", () => {
 //     status.textContent = `Selected CV downloaded: ${msg.payload.fileName}`;
 //   }
 // });
+
+// Generate Email Button Trigger
+document.getElementById('generateEmail').addEventListener('click', async () => {
+  const resumeId = resumeSelect.value;
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+
+  if (!tab?.url || tab.url.startsWith("chrome://")) {
+    statusEl.textContent = "Cannot run on this page.";
+    return;
+  }
+
+  const sendGenMessage = () =>
+    new Promise((resolve, reject) => {
+      chrome.tabs.sendMessage(
+        tab.id,
+        { type: "GENERATE_EMAIL_REQUEST", resumeId },
+        (res) => {
+          if (chrome.runtime.lastError) reject(chrome.runtime.lastError);
+          else resolve(res);
+        }
+      );
+    });
+
+  try {
+    await chrome.sidePanel.open({ tabId: tab.id });
+    await sendGenMessage();
+    chrome.runtime.sendMessage({ type: "START_GENERATION" });
+    setTimeout(() => window.close(), 100);
+  } catch {
+    await chrome.scripting.executeScript({
+      target: { tabId: tab.id },
+      files: ["content.js"]
+    });
+    await sendGenMessage();
+    chrome.runtime.sendMessage({ type: "START_GENERATION" });
+    setTimeout(() => window.close(), 100);
+  }
+});

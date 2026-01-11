@@ -54,6 +54,10 @@
         cursor: not-allowed;
       }
 
+      #generateEmail {
+        background: #0a8ec2;
+      }
+
       #status {
         margin-top: 12px;
         font-size: 13px;
@@ -97,7 +101,7 @@
 
   <body>
     <div class="container">
-      <h3>Where Is My Job</h3>
+      <h3>WhereIsMyJob</h3>
 
       <button id="saveJD">Save this Job</button>
        <!-- <br> -->
@@ -105,8 +109,9 @@
         <option value="">No resume selected</option>
       </select>
         <br>
+      <button id="generateEmail">Generate Email for this Job</button>
       <button id="viewJobs" class="secondary">
-        View Saved
+        Home page
       </button>
 
       <button id="loginBtn">Login with Google</button>
@@ -129,7 +134,7 @@
   </a>
     </div>
     <div>
-        <p style="text-align: center; color: #8e8e93;">Beta version</p>
+        <p style="text-align: center; color: #8e8e93;">v2.1.0</p>
     </div>
 
     <script type="module" src="popup.js"></script>

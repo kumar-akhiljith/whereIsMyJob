@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body { padding: 16px; font-family: sans-serif; background: #f9f9f9; }
+    .header { font-weight: bold; font-size: 16px; margin-bottom: 20px; color: #0A66C2; }
+    #loader { text-align: center; margin-top: 50px; }
+    .spinner { border: 3px solid #f3f3f3; border-top: 3px solid #0A66C2; border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 10px auto; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    textarea { width: 100%; height: 60vh; border-radius: 8px; border: 1px solid #ddd; padding: 10px; font-size: 14px; }
+    .hidden { display: none; }
+    .btn-group { display: flex; gap: 8px; margin-top: 10px; }
+    button { flex: 1; padding: 10px; border-radius: 5px; cursor: pointer; border: none; }
+    .primary { background: #0A66C2; color: white; }
+  </style>
+</head>
+<body>
+  <div class="header">AI Job Assistant</div>
+  <p id="status" style="color: #6e6e73; font-size: 13px; text-align: center;"></p>
+  
+  <div id="loader">
+    <div class="spinner"></div>
+    <p>Writing your email...</p>
+  </div>
+
+  <div id="result" class="hidden">
+    <textarea id="emailOutput"></textarea>
+    <div class="btn-group">
+      <button id="copyBtn" class="primary">Copy</button>
+      <button id="gmailBtn">Open Gmail</button>
+    </div>
+  </div>
+
+  <script type="module" src="sidepanel.js"></script>
+</body>
+</html>

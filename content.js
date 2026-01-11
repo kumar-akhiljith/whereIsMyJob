@@ -7,9 +7,6 @@ chrome.runtime.onMessage.addListener((msg) => {
   if (isLinkedIn) {
     extractLinkedInJob(resumeId);
   } else {
-    // alert(
-    // "Saving jobs from non-LinkedIn websites is still under development.\n\nPlease use it in LinkedIn jobs for now."
-    // );
     extractGenericJob(resumeId);
   }
 });
@@ -63,7 +60,7 @@ function extractLinkedInJob(resumeId) {
   return true;
 }
 
-function extractLinkedInLocation(resumeId) {
+function extractLinkedInLocation() {
   const container = document.querySelector(
     ".job-details-jobs-unified-top-card__tertiary-description-container"
   );
@@ -76,7 +73,6 @@ function extractLinkedInLocation(resumeId) {
   return spans[0].innerText.trim();
 }
 
-// other sites 
 function extractGenericJob(resumeId) {
 
   chrome.runtime.sendMessage({
@@ -126,3 +122,17 @@ function extractGenericJob(resumeId) {
 
 // })();
 
+chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
+  if (msg.type === "GENERATE_EMAIL_REQUEST") {
+    const pageText = document.body.innerText; 
+
+    chrome.storage.local.set({ 
+      pendingEmailData: { 
+        pageText: pageText.slice(0, 6000),
+        resumeId: msg.resumeId 
+      } 
+    });
+    sendResponse({ status: "ok" });
+  }
+  return true;
+});

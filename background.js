@@ -5,6 +5,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     const { authToken } = await chrome.storage.local.get("authToken");
     if (!authToken) return;
 
+    if (message.type === "OPEN_SIDE_PANEL") {
+      chrome.sidePanel.open({ tabId: sender.tab.id });
+      return;
+    }
+
+    if (message.type === "START_GENERATION") {
+      return;
+    }
+
     let response;
 
     if (message.type === "LINKEDIN_JOB_EXTRACTED") {
