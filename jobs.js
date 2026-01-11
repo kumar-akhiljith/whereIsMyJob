@@ -474,3 +474,10 @@ document.getElementById("aboutBtn").addEventListener("click", () => {
 
 loadResumes();
 // -------------
+
+// refresh page
+document.getElementById("refreshJobsBtn")
+  .addEventListener("click", () => {
+    loadJobs();
+    showToast("Refreshing jobs…", "success");
+});

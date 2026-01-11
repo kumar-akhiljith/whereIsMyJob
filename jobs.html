@@ -438,6 +438,34 @@ td.resume-cell {
   cursor: not-allowed;
 }
 
+.stats-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.refresh-btn {
+  background: #e5e5ea;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 14px;
+  margin-left: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #1c1c1e;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.refresh-btn:hover {
+  background: #d1d1d6;
+}
+
+.refresh-btn:active {
+  transform: scale(0.97);
+}
+
 </style>
 
   </head>
@@ -448,10 +476,14 @@ td.resume-cell {
     <p style="text-align: center">Press Ctrl + F to do default search</p>
     <div id="toast" class="toast"></div>
     <div class="top-bar">
-      <div class="stats">
-        TOTAL JOBS APPLIED: <span id="totalJobs">0</span>
+      <div>
+        <div class="stats">
+          TOTAL JOBS APPLIED: <span id="totalJobs">0</span>
+        </div>
+        <button id="refreshJobsBtn" class="refresh-btn">
+          &#x21bb;
+        </button>
       </div>
-
       <button id="openResumeModal" class="manage-resume-btn">
         Manage Resumes
       </button>
